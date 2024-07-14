@@ -1179,9 +1179,11 @@ clang::CXXRecordDecl *hlsl::DeclareWaveMatrixType(clang::ASTContext &context,
   return templateRecordDecl;
 }
 
-CXXRecordDecl *hlsl::DeclareResourceType(ASTContext &context, bool bSampler) {
+CXXRecordDecl *hlsl::DeclareResourceHeapType(ASTContext &context,
+                                             QualType elementType,
+                                             bool bSampler) {
   // struct ResourceDescriptor { uint8 desc; }
-  StringRef Name = bSampler ? ".Sampler" : ".Resource";
+  StringRef Name = bSampler ? ".SamplerDescriptorHeap" : ".ResourceDescriptorHeap";
   BuiltinTypeDeclBuilder typeDeclBuilder(context.getTranslationUnitDecl(), Name,
                                          TagDecl::TagKind::TTK_Struct);
   typeDeclBuilder.startDefinition();
@@ -1191,7 +1193,7 @@ CXXRecordDecl *hlsl::DeclareResourceType(ASTContext &context, bool bSampler) {
   CXXRecordDecl *recordDecl = typeDeclBuilder.getRecordDecl();
 
   QualType indexType = context.UnsignedIntTy;
-  QualType resultType = context.getRecordType(recordDecl);
+  QualType resultType = elementType;
   resultType = context.getConstType(resultType);
 
   CXXMethodDecl *functionDecl = CreateObjectFunctionDeclarationWithParams(
@@ -1203,6 +1205,16 @@ CXXRecordDecl *hlsl::DeclareResourceType(ASTContext &context, bool bSampler) {
       context, "op", "",
       static_cast<int>(hlsl::IntrinsicOp::IOP_CreateResourceFromHeap)));
   functionDecl->addAttr(HLSLCXXOverloadAttr::CreateImplicit(context));
+  return recordDecl;
+}
+
+CXXRecordDecl *hlsl::DeclareResourceType(ASTContext &context, bool bSampler) {
+  StringRef Name = bSampler ? ".Sampler" : ".Resource";
+  BuiltinTypeDeclBuilder typeDeclBuilder(context.getTranslationUnitDecl(), Name,
+                                         TagDecl::TagKind::TTK_Struct);
+  typeDeclBuilder.startDefinition();
+  typeDeclBuilder.addField("h", GetHLSLObjectHandleType(context));
+  CXXRecordDecl *recordDecl = typeDeclBuilder.getRecordDecl();
   return recordDecl;
 }
 

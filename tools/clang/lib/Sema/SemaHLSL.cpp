@@ -219,9 +219,11 @@ enum ArBasicKind {
   // RayQuery
   AR_OBJECT_RAY_QUERY,
 
-  // Heap Resource
+  // Heap Resource  
   AR_OBJECT_HEAP_RESOURCE,
   AR_OBJECT_HEAP_SAMPLER,
+  AR_OBJECT_RESOURCE_HEAP,
+  AR_OBJECT_SAMPLER_HEAP,
 
   AR_OBJECT_RWTEXTURE2DMS,
   AR_OBJECT_RWTEXTURE2DMS_ARRAY,
@@ -595,6 +597,8 @@ const UINT g_uBasicKindProps[] = {
     BPROP_OBJECT, // AR_OBJECT_RAY_QUERY,
     BPROP_OBJECT, // AR_OBJECT_HEAP_RESOURCE,
     BPROP_OBJECT, // AR_OBJECT_HEAP_SAMPLER,
+    BPROP_OBJECT, // AR_OBJECT_RESOURCE_HEAP,
+    BPROP_OBJECT, // AR_OBJECT_SAMPLER_HEAP,
 
     BPROP_OBJECT | BPROP_RWBUFFER, // AR_OBJECT_RWTEXTURE2DMS
     BPROP_OBJECT | BPROP_RWBUFFER, // AR_OBJECT_RWTEXTURE2DMS_ARRAY
@@ -1177,7 +1181,7 @@ static const ArBasicKind g_Texture2DCT[] = {AR_OBJECT_TEXTURE2D,
 static const ArBasicKind g_Texture2DArrayCT[] = {AR_OBJECT_TEXTURE2D_ARRAY,
                                                  AR_BASIC_UNKNOWN};
 
-static const ArBasicKind g_ResourceCT[] = {AR_OBJECT_HEAP_RESOURCE,
+static const ArBasicKind g_ResourceCT[] = {AR_OBJECT_RESOURCE_HEAP,
                                            AR_BASIC_UNKNOWN};
 
 static const ArBasicKind g_RayDescCT[] = {AR_OBJECT_RAY_DESC, AR_BASIC_UNKNOWN};
@@ -1428,7 +1432,9 @@ static const ArBasicKind g_ArBasicKindsAsTypes[] = {
     AR_OBJECT_TRIANGLE_HIT_GROUP, AR_OBJECT_PROCEDURAL_PRIMITIVE_HIT_GROUP,
     AR_OBJECT_RAYTRACING_PIPELINE_CONFIG1,
 
-    AR_OBJECT_RAY_QUERY, AR_OBJECT_HEAP_RESOURCE, AR_OBJECT_HEAP_SAMPLER,
+    AR_OBJECT_RAY_QUERY, 
+    AR_OBJECT_HEAP_RESOURCE, AR_OBJECT_HEAP_SAMPLER,
+    AR_OBJECT_RESOURCE_HEAP, AR_OBJECT_SAMPLER_HEAP,
 
     AR_OBJECT_RWTEXTURE2DMS,       // RWTexture2DMS
     AR_OBJECT_RWTEXTURE2DMS_ARRAY, // RWTexture2DMSArray
@@ -1542,6 +1548,8 @@ static const uint8_t g_ArBasicKindsTemplateCount[] = {
     1, // AR_OBJECT_RAY_QUERY,
     0, // AR_OBJECT_HEAP_RESOURCE,
     0, // AR_OBJECT_HEAP_SAMPLER,
+    0, // AR_OBJECT_RESOURCE_HEAP,
+    0, // AR_OBJECT_SAMPLER_HEAP,
 
     2, // AR_OBJECT_RWTEXTURE2DMS
     2, // AR_OBJECT_RWTEXTURE2DMS_ARRAY
@@ -1693,6 +1701,8 @@ static const SubscriptOperatorRecord g_ArBasicKindsSubscripts[] = {
     {0, MipsFalse, SampleFalse}, // AR_OBJECT_RAY_QUERY,
     {0, MipsFalse, SampleFalse}, // AR_OBJECT_HEAP_RESOURCE,
     {0, MipsFalse, SampleFalse}, // AR_OBJECT_HEAP_SAMPLER,
+    {0, MipsFalse, SampleFalse}, // AR_OBJECT_RESOURCE_HEAP,
+    {0, MipsFalse, SampleFalse}, // AR_OBJECT_SAMPLER_HEAP,
 
     {2, MipsFalse, SampleTrue}, // AR_OBJECT_RWTEXTURE2DMS (RWTexture2DMS)
     {3, MipsFalse,
@@ -1778,7 +1788,8 @@ static const char *g_ArBasicTypeNames[] = {
     "RaytracingPipelineConfig", "TriangleHitGroup",
     "ProceduralPrimitiveHitGroup", "RaytracingPipelineConfig1",
 
-    "RayQuery", "HEAP_Resource", "HEAP_Sampler",
+    "RayQuery", "HEAP_Resource", "HEAP_Sampler", "Resource_HEAP",
+    "Sampler_HEAP",
 
     "RWTexture2DMS", "RWTexture2DMSArray",
 
@@ -3718,21 +3729,28 @@ private:
         recordDecl = DeclareRayQueryType(*m_context);
       } else if (kind == AR_OBJECT_HEAP_RESOURCE) {
         recordDecl = DeclareResourceType(*m_context, /*bSampler*/ false);
+      } else if (kind == AR_OBJECT_HEAP_SAMPLER) {
+        recordDecl = DeclareResourceType(*m_context, /*bSampler*/ true);
+      } else if (kind == AR_OBJECT_RESOURCE_HEAP) {
+        recordDecl = DeclareResourceHeapType(
+            *m_context, GetBasicKindType(AR_OBJECT_HEAP_RESOURCE),
+            /*bSampler*/ false);
         if (SM->IsSM66Plus()) {
           // create Resource ResourceDescriptorHeap;
           DeclareBuiltinGlobal("ResourceDescriptorHeap",
                                m_context->getRecordType(recordDecl),
                                *m_context);
         }
-      } else if (kind == AR_OBJECT_HEAP_SAMPLER) {
-        recordDecl = DeclareResourceType(*m_context, /*bSampler*/ true);
+      } else if (kind == AR_OBJECT_SAMPLER_HEAP) {
+        recordDecl = DeclareResourceHeapType(
+            *m_context, GetBasicKindType(AR_OBJECT_HEAP_SAMPLER),
+            /*bSampler*/ true);
         if (SM->IsSM66Plus()) {
-          // create Resource SamplerDescriptorHeap;
+          // create Resource ResourceDescriptorHeap;
           DeclareBuiltinGlobal("SamplerDescriptorHeap",
                                m_context->getRecordType(recordDecl),
                                *m_context);
         }
-
       } else if (IsWaveMatrixBasicKind(kind)) {
         recordDecl = DeclareWaveMatrixType(
             *m_context,
@@ -4682,6 +4700,8 @@ public:
     case AR_OBJECT_SAMPLER:
     case AR_OBJECT_SAMPLERCOMPARISON:
 
+    case AR_OBJECT_RESOURCE_HEAP: 
+    case AR_OBJECT_SAMPLER_HEAP:
     case AR_OBJECT_HEAP_RESOURCE:
     case AR_OBJECT_HEAP_SAMPLER:
 

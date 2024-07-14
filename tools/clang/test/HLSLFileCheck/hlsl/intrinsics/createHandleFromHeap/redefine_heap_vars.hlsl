@@ -4,8 +4,8 @@
 // Make sure that global heap variable redeclaration fails
 // on 6.6 and passes on previous shader models
 
-// FAIL: error: redefinition of 'ResourceDescriptorHeap' with a different type: 'Texture2D<float> []' vs '.Resource'
-// FAIL: error: redefinition of 'SamplerDescriptorHeap' with a different type: 'SamplerState []' vs '.Sampler'
+// FAIL: error: redefinition of 'ResourceDescriptorHeap' with a different type: 'Texture2D<float> []' vs '.ResourceDescriptorHeap'
+// FAIL: error: redefinition of 'SamplerDescriptorHeap' with a different type: 'SamplerState []' vs '.SamplerDescriptorHeap'
 
 // Verify that feature bits aren't set and the shader produce roughly reasonable code
 // CHECK-NOT: Resource descriptor heap indexing
