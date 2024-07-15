@@ -649,7 +649,7 @@ bool IsHLSLNodeInputType(clang::QualType type) {
 bool IsHLSLDynamicResourceType(clang::QualType type) {
   if (const RecordType *RT = type->getAs<RecordType>()) {
     StringRef name = RT->getDecl()->getName();
-    return name == ".Resource" || name == ".ResourceDescriptorHeap";
+    return name == ".Resource" || name == ".ResourceHeap";
   }
   return false;
 }
@@ -657,7 +657,7 @@ bool IsHLSLDynamicResourceType(clang::QualType type) {
 bool IsHLSLDynamicSamplerType(clang::QualType type) {
   if (const RecordType *RT = type->getAs<RecordType>()) {
     StringRef name = RT->getDecl()->getName();
-    return name == ".Sampler" || name == ".SamplerDescriptorHeap";
+    return name == ".Sampler" || name == ".SamplerHeap";
   }
   return false;
 }

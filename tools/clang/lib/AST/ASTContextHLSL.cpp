@@ -1183,7 +1183,7 @@ CXXRecordDecl *hlsl::DeclareResourceHeapType(ASTContext &context,
                                              QualType elementType,
                                              bool bSampler) {
   // struct ResourceDescriptor { uint8 desc; }
-  StringRef Name = bSampler ? ".SamplerDescriptorHeap" : ".ResourceDescriptorHeap";
+  StringRef Name = bSampler ? ".SamplerHeap" : ".ResourceHeap";
   BuiltinTypeDeclBuilder typeDeclBuilder(context.getTranslationUnitDecl(), Name,
                                          TagDecl::TagKind::TTK_Struct);
   typeDeclBuilder.startDefinition();

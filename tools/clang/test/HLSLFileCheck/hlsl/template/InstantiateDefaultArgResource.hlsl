@@ -8,8 +8,8 @@
 // AST-NEXT: CXXOperatorCallExpr {{.*}} 'const .Resource'
 // AST-NEXT: ImplicitCastExpr {{.*}} 'const .Resource (*)(unsigned int) const' <FunctionToPointerDecay>
 // AST-NEXT: DeclRefExpr {{.*}} 'const .Resource (unsigned int) const' lvalue CXXMethod 0x{{[0-9a-fA-F]+}} 'operator[]' 'const .Resource (unsigned int) const'
-// AST-NEXT: ImplicitCastExpr {{.*}} 'const .ResourceDescriptorHeap' lvalue <NoOp>
-// AST-NEXT: DeclRefExpr {{.*}} '.ResourceDescriptorHeap' lvalue Var 0x{{[0-9a-fA-F]+}} 'ResourceDescriptorHeap' '.ResourceDescriptorHeap'
+// AST-NEXT: ImplicitCastExpr {{.*}} 'const .ResourceHeap' lvalue <NoOp>
+// AST-NEXT: DeclRefExpr {{.*}} '.ResourceHeap' lvalue Var 0x{{[0-9a-fA-F]+}} 'ResourceDescriptorHeap' '.ResourceHeap'
 // AST-NEXT: ImplicitCastExpr {{.*}} 'unsigned int' <IntegralCast>
 // AST-NEXT: IntegerLiteral {{.*}} 'literal int' 0
 // AST-NEXT: CompoundStmt
@@ -21,8 +21,8 @@
 // AST-NEXT: CXXOperatorCallExpr {{.*}} 'const .Resource'
 // AST-NEXT: ImplicitCastExpr {{.*}}'const .Resource (*)(unsigned int) const' <FunctionToPointerDecay>
 // AST-NEXT: DeclRefExpr {{.*}} 'const .Resource (unsigned int) const' lvalue CXXMethod 0x{{[0-9a-fA-F]+}} 'operator[]' 'const .Resource (unsigned int) const'
-// AST-NEXT: ImplicitCastExpr {{.*}} 'const .ResourceDescriptorHeap' lvalue <NoOp>
-// AST-NEXT: DeclRefExpr {{.*}} '.ResourceDescriptorHeap' lvalue Var 0x{{[0-9a-fA-F]+}} 'ResourceDescriptorHeap' '.ResourceDescriptorHeap'
+// AST-NEXT: ImplicitCastExpr {{.*}} 'const .ResourceHeap' lvalue <NoOp>
+// AST-NEXT: DeclRefExpr {{.*}} '.ResourceHeap' lvalue Var 0x{{[0-9a-fA-F]+}} 'ResourceDescriptorHeap' '.ResourceHeap'
 // AST-NEXT: ImplicitCastExpr {{.*}} 'unsigned int' <IntegralCast>
 // AST-NEXT: IntegerLiteral {{.*}} 'literal int' 0
 
